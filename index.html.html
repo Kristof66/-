@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Egy kis rejtvény</title>
+<style>
+:root{--bg:#3a0d17;--card:#4d1421;--gold:#e3c27d;--txt:#f6ece0;--dim:#c9b5a6;box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+html{color-scheme:dark}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.5;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+#app{height:100%;display:flex;flex-direction:column;justify-content:center;max-width:520px;margin:0 auto;padding:16px 18px}
+.dots{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
+.dots i{width:9px;height:9px;border-radius:50%;background:#7a3b4a}
+.dots i.on{background:var(--gold)}
+.page{display:none;background:var(--card);border-radius:16px;padding:20px 18px;max-height:calc(100% - 40px);overflow-y:auto}
+.page.show{display:block;animation:in .4s ease both}
+@keyframes in{from{opacity:0;transform:translateX(28px)}}
+h1{font-size:1.3rem;margin:0 0 10px;color:var(--gold)}
+p{margin:0 0 10px;font-size:.96rem}
+.big{font-size:1.25rem;color:var(--gold);text-align:center;margin:6px 0}
+blockquote{margin:8px 0;padding-left:12px;border-left:3px solid var(--gold);font-style:italic;font-size:.93rem}
+blockquote span{color:var(--gold);font-weight:700}
+.src{color:var(--dim);font-size:.85rem;text-align:right;margin-bottom:8px}
+b{color:var(--gold)}
+input{width:100%;margin:6px 0 10px;padding:13px;font:inherit;color:var(--txt);background:#2a0a11;border:1px solid #8a4a58;border-radius:10px}
+input:focus{outline:2px solid var(--gold)}
+button{width:100%;padding:14px;font:inherit;font-weight:600;color:#2a0a11;background:var(--gold);border:0;border-radius:10px}
+button.tip{background:transparent;color:var(--gold);border:1px solid var(--gold);margin-top:10px;display:none}
+.msg{min-height:1.4em;margin:10px 0 0;text-align:center;color:#ffb3bd;font-size:.92rem}
+.msg.ok{color:var(--gold)}
+.tiptxt{display:none;margin:10px 0 0;padding:10px;border-radius:10px;background:#3a0d17;color:var(--dim);font-size:.9rem}
+.l{opacity:0;transform:translateY(8px);transition:opacity 1s,transform 1s}
+.l.on{opacity:1;transform:none}
+.qb{display:none;width:auto;align-self:center;margin-bottom:10px;padding:6px 14px;background:transparent;color:var(--gold);border:1px solid var(--gold);font-size:.85rem;font-weight:400;border-radius:20px}
+.mir{transform:scaleX(-1);transition:transform .9s}.mir.flip{transform:none}
+.name{text-align:center;font-size:2.2rem;color:var(--gold);margin:18px 0;min-height:3rem}
+.cd{display:flex;gap:10px;justify-content:center;margin:18px 0}
+.cd div{flex:1;background:#2a0a11;border-radius:12px;padding:12px 4px;text-align:center}
+.cd strong{display:block;font-size:1.8rem;color:var(--gold)}
+.cd small{color:var(--dim)}
+a.back{display:block;text-align:center;color:var(--dim);font-size:.9rem;margin-top:12px}
+#fin{position:relative}
+.curtain{position:absolute;inset:0;z-index:2;display:flex;pointer-events:none;border-radius:16px;overflow:hidden}
+.curtain i{flex:1;background:linear-gradient(90deg,#5c1020,#8a1c33 50%,#5c1020);transition:transform 2s ease-in-out}
+.curtain.open i:first-child{transform:translateX(-101%)}
+.curtain.open i:last-child{transform:translateX(101%)}
+.heart{width:auto;background:none;color:var(--gold);opacity:.22;padding:8px 14px;font-size:1.1rem;margin-top:8px}
+.sec{display:none;opacity:0;transition:opacity 1.2s;margin-top:14px;padding:12px;border:1px dashed var(--gold);border-radius:10px;color:var(--gold);text-align:center;font-style:italic}
+.sec.on{opacity:1}
+.tk{border:2px dashed var(--gold);border-radius:12px;padding:14px;text-align:center;margin-bottom:12px;background:#3a0d17}
+.tk strong{display:block;font-size:1.4rem;color:var(--gold)}
+.tk small{display:block;color:var(--dim)}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="dots" id="dots"></div>
+<button type="button" class="qb" id="qb">↩ Vissza az idézethez</button>
+
+<section class="page">
+<h1>Egy kis rejtvény</h1>
+<p>Induljunk ki abból a gondolatból, ami ezt a titkos estét ihlette:</p>
+<div class="big">„Úgy megnézném...”</div>
+<p>És a következő idézetből:</p>
+<blockquote>„...csak <span>e</span>mberség van, és a gyilkosságnál is nagyobb bűn, ha valaki embertelen, ha valaki <span>d</span>urva, ha valaki fennhéjázó... és a legnagyobb <span>e</span>rény a lényegbe ható, figyelmes tisztaszívűség, mert többet, gyökeresebbet úgy <span>s</span>em tehetünk itt a földön.”</blockquote>
+<div class="src">– Kosztolányi Dezső (1929)</div>
+<p>Ez a kiindulópontunk.</p>
+<button type="button" id="st">Kezdjük</button>
+</section>
+
+<section class="page" data-q="1">
+<h1>1. Helyszín</h1>
+<p>Keresd azt a helyet, ahová sötétben ülsz be, és ami néhány órára teljesen kiszakít a valóságból. Öreg, árnyas fák rengetegével szemben áll, ahol a sötét ágak a fellegvár talpánál, a Szamos partján hajolnak a víz fölé. A leírt szavak itt varázslattá válnak, és a történetek utat találnak a lelkekhez.</p>
+<input type="text" placeholder="Írd ide a helyszínt…" autocomplete="off" autocapitalize="off" spellcheck="false">
+<button type="button" class="go">Ellenőrzés</button>
+<p class="msg"></p>
+<p class="tiptxt">Tipp: itt nincs vászon és nincs felvétel. Minden élőben történik, a szemed előtt.</p>
+<button type="button" class="tip">Kérek egy tippet</button>
+</section>
+
+<section class="page" data-q="2">
+<h1>2. Az első szó</h1>
+<p>Az idézet egy olyan alkotáshoz vezet, amelynek középpontjában egy makulátlan lelkű, igazi „áldott teremtés” áll, akit a saját környezete őröl fel. A titkunk az ő teljes, két szóból álló neve.</p>
+<p><b>Az első szó:</b> Keresd azt a jelzőt, amivel egy apró, ártatlan mosolyt, az első, vágyott csókot, vagy a már rég vágyott bosszút írja le. Ami úgy olvad el a nyelven, hogy feledteti a mindennapok keserűségét.</p>
+<input type="text" placeholder="Az első szó…" autocomplete="off" autocapitalize="off" spellcheck="false">
+<button type="button" class="go">Ellenőrzés</button>
+<p class="msg"></p>
+<p class="tiptxt">Tipp: nézd meg újra az első oldalon az idézet kiemelt betűit, és olvasd össze őket.</p>
+<button type="button" class="tip">Kérek egy tippet</button>
+</section>
+
+<section class="page" data-q="3">
+<h1>3. A második szó</h1>
+<p>Hoppá, ez a feladvány tükörbe került. Olvasd el, ha tudod!</p><div class="mir"><p><b>A második szó:</b> Egy klasszikus női név. Geometriája tökéletes: akárhonnan kezded olvasni, ugyanabba a pontba térsz vissza – akárcsak a történet főhőse, akit a sorsa egy zárt, kilátástalan körbe kényszerít.</p></div>
+<input type="text" placeholder="A második szó…" autocomplete="off" autocapitalize="off" spellcheck="false">
+<button type="button" class="go">Ellenőrzés</button>
+<p class="msg"></p>
+<p class="tiptxt">Tipp: négy betűből áll, és előről meg hátulról olvasva is ugyanaz. A szöveget most visszafordítottam.</p>
+<button type="button" class="tip">Kérek egy tippet</button>
+</section>
+
+<section class="page" id="join">
+<h1>Összeáll a kép</h1>
+<p>Már nincs más hátra, mint összerakni a két szót:</p>
+<div class="name" id="nm"></div>
+<button type="button" data-next="5">Tovább</button>
+</section>
+
+<section class="page" id="fin">
+<div class="curtain"><i></i><i></i></div>
+<div class="l"><h1>Gratulálok, sikeresen megfejtetted a rejtélyt!</h1></div>
+<div class="l"><p>A titkos estére az egyetlen kötelező kérés: viselj egy alkalomhoz illő ruhát! A szombat esténk pedig a péntekedtől (nov. 6.) függ:</p></div>
+<div class="l"><p><b>Ha péntek este nálam alszol:</b> Kérlek, már pénteken hozz magaddal mindent a hétvégére, amire szükséged lesz!</p></div>
+<div class="l"><p><b>Ha péntek éjszaka nem alszol nálam:</b> Akkor szombaton pontosan 16:30-kor jelenj meg az én címemen (Primăverii 8.) megfelelő öltözetben.</p></div>
+<div class="l"><p class="big">SOK puszi!</p></div>
+<div class="l"><button type="button" data-next="6">Visszaszámlálás</button></div>
+<div class="l" style="text-align:center"><button type="button" class="heart" id="hrt" aria-label="szív">♥</button></div>
+<div class="sec" id="secret">Még hogy nem adtál semmi hintet! Most már rájöhetsz, hogy egy olyan kicsi is elég, mint a szív, amire most kattintottál.</div>
+</section>
+
+<section class="page" id="cdp">
+<h1>Már nem sok van hátra…</h1>
+<div class="tk"><small>JEGY</small><strong>Édes Anna</strong><small>Kolozsvári Állami Magyar Színház · Studio</small><small>Szombat, nov. 7. · 20:00</small><small>1. sor · 14. és 15. szék</small></div>
+<p>Szombat, 20:00-ig:</p>
+<div class="cd"><div><strong id="d">0</strong><small>nap</small></div><div><strong id="h">0</strong><small>óra</small></div><div><strong id="m">0</strong><small>perc</small></div><div><strong id="s">0</strong><small>mp</small></div></div>
+<a class="back" href="#" id="bk">← vissza az üzenethez</a>
+</section>
+</div>
+<script>
+var cur=0,ret=1,w2=false,KEY='rejtveny-step-v3',pages=document.querySelectorAll('.page'),dots=document.getElementById('dots'),timers=[];
+pages.forEach(function(){dots.appendChild(document.createElement('i'))});
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
+function go(n){
+timers.forEach(clearTimeout);timers=[];cur=n;document.getElementById('qb').style.display=(n>=1&&n<=4&&(n!==2||w2))?'block':'none';
+pages.forEach(function(p,i){p.classList.toggle('show',i===n)});
+dots.childNodes.forEach(function(d,i){d.classList.toggle('on',i<=n)});
+try{localStorage.setItem(KEY,String(n))}catch(e){}
+var f=pages[n].querySelector('input');if(f)timers.push(setTimeout(function(){f.focus()},450));
+if(n===4){var nm=document.getElementById('nm');nm.textContent='';timers.push(setTimeout(function(){nm.textContent='Édes'},400));timers.push(setTimeout(function(){nm.textContent='Édes Anna'},1600))}
+if(n===5){var cu=pages[5].querySelector('.curtain');cu.classList.remove('open');timers.push(setTimeout(function(){cu.classList.add('open')},800));var ls=pages[5].querySelectorAll('.l');ls.forEach(function(l,i){l.classList.remove('on');timers.push(setTimeout(function(){l.classList.add('on')},2600+i*1700))})}
+if(n===6)tick()
+}
+var T=new Date('2026-11-07T20:00:00+02:00');
+function tick(){
+if(!pages[6].classList.contains('show'))return;
+var t=Math.max(0,T-new Date()),q=function(id,v){document.getElementById(id).textContent=v};
+q('d',Math.floor(t/864e5));q('h',Math.floor(t%864e5/36e5));q('m',Math.floor(t%36e5/6e4));q('s',Math.floor(t%6e4/1e3));
+timers.push(setTimeout(tick,1000))
+}
+document.querySelectorAll('[data-next]').forEach(function(b){b.addEventListener('click',function(){go(+b.dataset.next)})});
+document.getElementById('bk').addEventListener('click',function(e){e.preventDefault();go(5)});
+var rules={
+1:{ok:function(v){return v.indexOf('szinhaz')!==-1&&v.indexOf('magyar')!==-1},
+ wrong:[[/mozi|film|kino|cinema|vetit/,'A sötét terem stimmel, de ott a történetek egy vásznon peregnek. Itt nincs vászon: a szereplők élőben, a szemed előtt lélegeznek. Gondold végig újra!'],
+ [/opera|balett/,'Közel jársz, de itt nem énekelnek: itt a szavaké a főszerep.'],
+ [/konyv|kiado|iroda/,'A szavak ott is varázslatosak, de itt valaki élőben mondja el őket neked.'],[/szinhaz/,'Színház, igen! De Kolozsváron több is van. Melyik az, ahol magyarul szólnak a szereplők? Írd ki a teljes nevét!'],[/nemzeti|roman|blaga|lucian/,'Az is Kolozsváron van, de az estéink nem ott zajlanak. Keresd azt, ahol magyarul játszanak!']],
+ def:'Hmm, ez még nem az. Olvasd el újra a leírást!'},
+2:{ok:function(v){return v==='edes'},wrong:[],def:'Ez még nem az. Olyan jelző, ami szinte elolvad a nyelven.'},
+3:{ok:function(v){return v==='anna'},wrong:[],def:'Ez még nem az. Olyan név, ami visszafelé is ugyanúgy olvasható.'}
+};
+pages.forEach(function(p,i){
+var r=rules[i];if(!r)return;
+var inp=p.querySelector('input'),msg=p.querySelector('.msg'),tip=p.querySelector('.tip'),tt=p.querySelector('.tiptxt'),tries=0;
+function run(){
+var v=norm(inp.value);if(!v)return;
+if(r.ok(v)){msg.className='msg ok';msg.textContent='Jó válasz! ✓';timers.push(setTimeout(function(){msg.textContent='';go(i+1)},800));return}
+tries++;if(i===2){w2=true;document.getElementById('qb').style.display='block'}msg.className='msg';var t=r.def;
+r.wrong.forEach(function(w){if(w[0].test(v))t=w[1]});
+msg.textContent=t;
+if(tries>=(i===3?1:2))tip.style.display='block'
+}
+p.querySelector('.go').addEventListener('click',run);
+inp.addEventListener('keydown',function(e){if(e.key==='Enter')run()});
+tip.addEventListener('click',function(){tt.style.display='block';tip.style.display='none';var m=p.querySelector('.mir');if(m)m.classList.add('flip')})
+});
+var hc=0;document.getElementById('hrt').addEventListener('click',function(){hc++;if(hc>=5){this.style.display='none';var h=document.getElementById('secret');h.style.display='block';setTimeout(function(){h.classList.add('on')},50)}});
+var st=document.getElementById('st');st.addEventListener('click',function(){go(ret)});document.getElementById('qb').addEventListener('click',function(){ret=cur;st.textContent='Vissza a feladványhoz';go(0);try{localStorage.setItem(KEY,String(ret))}catch(e){}});
+var s=0;try{s=parseInt(localStorage.getItem(KEY),10)||0}catch(e){}
+go(s>=pages.length||s===4?(s===4?4:0):s);
+</script>
+</body>
+</html>
